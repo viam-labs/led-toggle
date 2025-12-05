@@ -1,0 +1,13 @@
+{
+  "module_name": "led-toggle",
+  "namespace": "naomi",
+  "language": "python",
+  "resource_type": "component",
+  "resource_subtype": "generic",
+  "model_name": "toggler",
+  "enable_cloud_build": true,
+  "initialize_git": false,
+  "generator_version": "0.1.0",
+  "generated_on": "2025-12-05T15:54:35.806065Z",
+  "module_readme_link": "README.md"
+}
