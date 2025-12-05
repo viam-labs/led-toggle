@@ -35,19 +35,12 @@ class Toggler(Generic, EasyResource):
         Returns:
             Self: The resource
         """
-        toggler = super().new(config, dependencies)
-        toggler.board_name = config.attributes.fields["board_name"].string_value
-        board_resource_name = Board.get_resource_name(toggler.board_name)
-        board_resource = dependencies[board_resource_name]
-        toggler.board = cast(Board, board_resource)
-        toggler.pin = config.attributes.fields["pin"].string_value
-        return toggler
+        return super().new(config, dependencies)
 
     @classmethod
     def validate_config(
         cls, config: ComponentConfig
     ) -> Tuple[Sequence[str], Sequence[str]]:
-        req_deps = []
         fields = config.attributes.fields
         if "board_name" not in fields:
             raise Exception("missing required board_name attribute")
@@ -63,6 +56,8 @@ class Toggler(Generic, EasyResource):
         pin = fields["pin"].string_value
         if not pin:
             raise ValueError("pin cannot be empty")
+        # Return the board as a required dependency (just the name, not the full ResourceName)
+        req_deps = [board_name]
         return req_deps, []
 
     def reconfigure(
@@ -86,7 +81,7 @@ class Toggler(Generic, EasyResource):
         for name, args in command.items():
             if name == "action" and args == "toggle":
                 pin = await self.board.gpio_pin_by_name(name=self.pin)
-                high = pin.get()
+                high = await pin.get()
                 if high:
                     await pin.set(high=False)
                 else:
