@@ -19,7 +19,6 @@ class Toggler(Generic, EasyResource):
     MODEL: ClassVar[Model] = Model(ModelFamily("naomi", "led-toggle"), "toggler")
     board_name: str
     board: Board
-    local_board: Board
     pin: str
 
     @classmethod
@@ -79,7 +78,7 @@ class Toggler(Generic, EasyResource):
         result = {key: False for key in command.keys()}
         for name, args in command.items():
             if name == "action" and args == "toggle":
-                pin = await self.local_board.gpio_pin_by_name(name=self.pin)
+                pin = await self.board.gpio_pin_by_name(name=self.pin)
                 high = await pin.get()
                 if high:
                     await pin.set(high=False)
