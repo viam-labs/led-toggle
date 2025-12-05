@@ -65,10 +65,15 @@ class Toggler(Generic, EasyResource):
         self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
     ):
         self.board_name = config.attributes.fields["board_name"].string_value
+        self.logger.warn(f"Reconfiguring toggler with board name: {self.board_name}")
         board_resource_name = Board.get_resource_name(self.board_name)
+        self.logger.warn(f"Board resource name: {board_resource_name}")
         board_resource = dependencies[board_resource_name]
+        self.logger.warn(f"Board resource: {board_resource}")
         self.local_board = cast(Board, board_resource)
+        self.logger.warn(f"Local board: {self.local_board}")
         self.pin = config.attributes.fields["pin"].string_value
+        self.logger.warn(f"Pin: {self.pin}")
         return super().reconfigure(config, dependencies)
 
     async def do_command(
