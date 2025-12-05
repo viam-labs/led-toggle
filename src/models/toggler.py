@@ -19,6 +19,7 @@ class Toggler(Generic, EasyResource):
     MODEL: ClassVar[Model] = Model(ModelFamily("naomi", "led-toggle"), "toggler")
     board_name: str
     board: Board
+    local_board: Board
     pin: str
 
     @classmethod
@@ -72,7 +73,7 @@ class Toggler(Generic, EasyResource):
         self.board_name = config.attributes.fields["board_name"].string_value
         board_resource_name = Board.get_resource_name(self.board_name)
         board_resource = dependencies[board_resource_name]
-        self.board = cast(Board, board_resource)
+        self.local_board = cast(Board, board_resource)
         self.pin = config.attributes.fields["pin"].string_value
         return super().reconfigure(config, dependencies)
 
@@ -86,7 +87,7 @@ class Toggler(Generic, EasyResource):
         result = {key: False for key in command.keys()}
         for name, args in command.items():
             if name == "action" and args == "toggle":
-                pin = await self.board.gpio_pin_by_name(name=self.pin)
+                pin = await self.local_board.gpio_pin_by_name(name=self.pin)
                 high = await pin.get()
                 if high:
                     await pin.set(high=False)
