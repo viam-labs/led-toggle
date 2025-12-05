@@ -35,7 +35,13 @@ class Toggler(Generic, EasyResource):
         Returns:
             Self: The resource
         """
-        return super().new(config, dependencies)
+        toggler = super().new(config, dependencies)
+        toggler.board_name = config.attributes.fields["board_name"].string_value
+        board_resource_name = Board.get_resource_name(toggler.board_name)
+        board_resource = dependencies[board_resource_name]
+        toggler.board = cast(Board, board_resource)
+        toggler.pin = config.attributes.fields["pin"].string_value
+        return toggler
 
     @classmethod
     def validate_config(
