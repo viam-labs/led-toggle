@@ -2,13 +2,13 @@
   "$schema": "https://dl.viam.dev/module.schema.json",
   "module_id": "naomi:led-toggle",
   "visibility": "public",
-  "url": "",
+  "url": "https://github.com/viam-labs/led-toggle/",
   "description": "Modular generic component: toggler",
   "models": [
     {
       "api": "rdk:component:generic",
       "model": "naomi:led-toggle:toggler",
-      "short_description": "Provide a short (100 characters or less) description of this model here",
+      "short_description": "Toggle a GPIO pin with a DoCommand",
       "markdown_link": "README.md#model-naomiled-toggletoggler"
     }
   ],
