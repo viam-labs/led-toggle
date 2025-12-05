@@ -17,6 +17,9 @@ class Toggler(Generic, EasyResource):
     # To enable debug-level logging, either run viam-server with the --debug option,
     # or configure your resource/machine to display debug logs.
     MODEL: ClassVar[Model] = Model(ModelFamily("naomi", "led-toggle"), "toggler")
+    board_name: str
+    board: Board
+    pin: str
 
     @classmethod
     def new(
