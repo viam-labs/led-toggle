@@ -36,7 +36,15 @@ class Toggler(Generic, EasyResource):
         Returns:
             Self: The resource
         """
-        return super().new(config, dependencies)
+        toggler = super().new(config, dependencies)
+        toggler.board_name = config.attributes.fields["board_name"].string_value
+        toggler.logger.warn(f"Board name: {toggler.board_name}")
+        board_resource_name = Board.get_resource_name(toggler.board_name)
+        board_resource = dependencies[board_resource_name]
+        toggler.board = cast(Board, board_resource)
+        toggler.logger.warn(f"Board: {toggler.board}")
+        toggler.pin = config.attributes.fields["pin"].string_value
+        return toggler
 
     @classmethod
     def validate_config(
@@ -60,20 +68,6 @@ class Toggler(Generic, EasyResource):
         # Return the board as a required dependency (just the name, not the full ResourceName)
         req_deps = [board_name]
         return req_deps, []
-
-    def reconfigure(
-        self, config: ComponentConfig, dependencies: Mapping[ResourceName, ResourceBase]
-    ):
-        self.board_name = config.attributes.fields["board_name"].string_value
-        self.logger.warn(f"Reconfiguring toggler with board name: {self.board_name}")
-        board_resource_name = Board.get_resource_name(self.board_name)
-        self.logger.warn(f"Board resource name: {board_resource_name}")
-        board_resource = dependencies[board_resource_name]
-        self.logger.warn(f"Board resource: {board_resource}")
-        self.local_board = cast(Board, board_resource)
-        self.logger.warn(f"Local board: {self.local_board}")
-        self.pin = config.attributes.fields["pin"].string_value
-        self.logger.warn(f"Pin: {self.pin}")
 
     async def do_command(
         self,
